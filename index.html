@@ -516,6 +516,45 @@
       from { opacity: 0; transform: translateY(15px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* CONTACT section mobile optimization */
+    @media (max-width: 768px) {
+
+      /* Team contact texts (names, roles, phone) */
+      #contact h3 {
+        font-size: 1rem !important;
+      }
+
+      #contact p,
+      #contact .sub {
+        font-size: 0.85rem !important;
+      }
+
+      /* Buttons inside cards (LinkedIn, Telegram) */
+      #contact .btn {
+        font-size: 0.75rem !important;
+        padding: 6px 12px !important;
+        border-radius: 10px !important;
+      }
+
+      /* Phone numbers specifically */
+      #contact a[href^="tel:"] {
+        font-size: 0.85rem !important;
+      }
+
+      /* Main email section button */
+      #contact > div:last-child .btn {
+        font-size: 0.9rem !important;
+        padding: 10px 20px !important;
+      }
+
+      /* Reduce padding inside each card for smaller screens */
+      #contact .card {
+        padding: 18px !important;
+        gap: 12px !important;
+      }
+    }
+
     
 
   </style>
@@ -592,31 +631,31 @@
         <h2>Muammo</h2>
 
         <p>
-          O‘zbekiston bo‘ylab ekologik va infratuzilma bilan bog‘liq ko‘plab real muammolar mavjud:
-          chiqindilarning uzoq muddat yig‘ilib qolishi, yo‘l buzilishlari, suv sizib chiqishi, chiqindilarning noqonuniy
+          O'zbekiston bo'ylab ekologik va infratuzilma bilan bog'liq ko'plab real muammolar mavjud:
+          chiqindilarning uzoq muddat yig'ilib qolishi, yo'l buzilishlari, suv sizib chiqishi, chiqindilarning noqonuniy
           tarzda yoqib yuborilishi, yashil maydonlarga zarar yetishi.
-          Bu muammolar ko‘pincha mas'ullar tomonidan vaqtida aniqlanmaydi yoki tegishli idoralarga yetib bormaydi.
+          Bu muammolar ko'pincha mas'ullar tomonidan vaqtida aniqlanmaydi yoki tegishli idoralarga yetib bormaydi.
         </p>
 
         <div class="card-grid">
 
           <div class="card">
             <div class="card-icon">🗑️</div>
-            <h3>Chiqindilar Yig‘ilib Qolishi</h3>
+            <h3>Chiqindilar Yig'ilib Qolishi</h3>
             <p>Belgilanmagan joyga tashlangan yoki vaqtida olib ketilmagan chiqindilar ekologiya va sanitariyaga katta
               zarar yetkazadi.</p>
           </div>
 
           <div class="card">
             <div class="card-icon">🚧</div>
-            <h3>Yo‘llardagi Muammolar</h3>
-            <p>Yo‘llardagi hosil bo‘lgan chuqurlar va yoriqlar transportlar va piyodalar harakati xavfsizligini keskin
+            <h3>Yo'llardagi Muammolar</h3>
+            <p>Yo'llardagi hosil bo'lgan chuqurlar va yoriqlar transportlar va piyodalar harakati xavfsizligini keskin
               pasaytiradi.</p>
           </div>
 
           <div class="card">
             <div class="card-icon">💧</div>
-            <h3>Suvning Isrof Bo‘lishi</h3>
+            <h3>Suvning Isrof Bo'lishi</h3>
             <p>E'tiborsiz qoldirilgan suv sizib chiqishi holatlari infratuzilmani yemiradi va resurslarni isrof qiladi.
             </p>
           </div>
@@ -624,13 +663,13 @@
           <div class="card">
             <div class="card-icon">🌳</div>
             <h3>Yashil Maydonlar Nazorati</h3>
-            <p>Daraxtlarning noqonuniy kesilishi va bog‘larning buzilishi hudud ekologiyasiga sezilarli putur yetkazadi.
+            <p>Daraxtlarning noqonuniy kesilishi va bog'larning buzilishi hudud ekologiyasiga sezilarli putur yetkazadi.
             </p>
           </div>
           <div class="card">
             <div class="card-icon">🔥</div>
             <h3>Chiqindilarning Yoqib Yuborilishi</h3>
-            <p>Nazorat­siz yoqilgan chiqindilar havoni ifloslantiradi va sog‘liq uchun katta xavf tug‘diradi.</p>
+            <p>Nazorat­siz yoqilgan chiqindilar havoni ifloslantiradi va sog'liq uchun katta xavf tug'diradi.</p>
           </div>
 
 
@@ -653,7 +692,7 @@
             <button class="flow-tab btn secondary" data-mode="authority" aria-pressed="false"
               style="background:transparent;color:var(--text-muted);border:1px solid rgba(255,255,255,0.06)">Idora
               (Dashboard)</button>
-            <div style="margin-left:auto;color:var(--text-muted);font-size:0.95rem">Slide orqali jarayonni ko‘ring</div>
+            <div style="margin-left:auto;color:var(--text-muted);font-size:0.95rem">Slide orqali jarayonni ko'ring</div>
           </div>
 
           <!-- Carousel wrapper -->
@@ -673,7 +712,7 @@
                 <div class="card-grid" style="grid-template-columns:1fr;align-items:center;gap:14px;">
                   <div class="card" style="padding:26px;">
                     <h3>1. Rasmga olish</h3>
-                    <p>Foydalanuvchi muammoni suratga oladi — chiqindi, yo‘l buzilishi yoki suv oqimi kabi holat.</p>
+                    <p>Foydalanuvchi muammoni suratga oladi — chiqindi, yo'l buzilishi yoki suv oqimi kabi holat.</p>
                     <div class="sub" style="margin-top:10px">User app · Kamera</div>
                   </div>
                 </div>
@@ -682,7 +721,7 @@
               <div class="slide" data-mode="user" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>2. Joylashuv</h3>
-                  <p>Ilova GPS orqali avtomatik joylashuvni oladi yoki foydalanuvchi qo‘lda belgilaydi.</p>
+                  <p>Ilova GPS orqali avtomatik joylashuvni oladi yoki foydalanuvchi qo'lda belgilaydi.</p>
                   <div class="sub" style="margin-top:10px">GPS / Manual</div>
                 </div>
               </div>
@@ -706,7 +745,7 @@
               <div class="slide" data-mode="user" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>5. Idoraga yuborish</h3>
-                  <p>Muammo tegishli hudud va tur bo‘yicha mas'ul idoraga yo‘naltiriladi.</p>
+                  <p>Muammo tegishli hudud va tur bo'yicha mas'ul idoraga yo'naltiriladi.</p>
                   <div class="sub" style="margin-top:10px">Routing to authority</div>
                 </div>
               </div>
@@ -715,7 +754,7 @@
                 <div class="card" style="padding:26px;">
                   <h3>6. Tasdiqlash</h3>
                   <p>Idora muammoni hal qilgach, sistemadan bildirishnoma yuboriladi; yaqin foydalanuvchilar tasdiqlash
-                    so‘rovi oladi.</p>
+                    so'rovi oladi.</p>
                   <div class="sub" style="margin-top:10px">Crowd verification</div>
                 </div>
               </div>
@@ -723,7 +762,7 @@
               <div class="slide" data-mode="user" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>7. Real-time xarita</h3>
-                  <p>Ilova xaritasida barcha muammolar real-vaqt rejimida ko‘rinadi, AI caption va status bilan birga.
+                  <p>Ilova xaritasida barcha muammolar real-vaqt rejimida ko'rinadi, AI caption va status bilan birga.
                   </p>
                   <div class="sub" style="margin-top:10px">Map & status</div>
                 </div>
@@ -733,7 +772,7 @@
               <div class="slide" data-mode="authority" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>1. Kirish va monitoring</h3>
-                  <p>Idoralarga maxsus dashboard orqali kelayotgan yangi xabarlarni ko‘rish imkoniyati.</p>
+                  <p>Idoralarga maxsus dashboard orqali kelayotgan yangi xabarlarni ko'rish imkoniyati.</p>
                   <div class="sub" style="margin-top:10px">Admin dashboard</div>
                 </div>
               </div>
@@ -741,7 +780,7 @@
               <div class="slide" data-mode="authority" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>2. Tahlil va tasnif</h3>
-                  <p>AI tomonidan berilgan tavsiyalarni tekshirish va prioritetga qo‘yish imkoniyati.</p>
+                  <p>AI tomonidan berilgan tavsiyalarni tekshirish va prioritetga qo'yish imkoniyati.</p>
                   <div class="sub" style="margin-top:10px">Review AI results</div>
                 </div>
               </div>
@@ -749,7 +788,7 @@
               <div class="slide" data-mode="authority" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>3. Vazifa tayinlash</h3>
-                  <p>Muammo bo‘yicha vazifani tegishli xizmatga yuborish va muddat belgilash.</p>
+                  <p>Muammo bo'yicha vazifani tegishli xizmatga yuborish va muddat belgilash.</p>
                   <div class="sub" style="margin-top:10px">Assign tasks</div>
                 </div>
               </div>
@@ -765,7 +804,7 @@
               <div class="slide" data-mode="authority" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>5. Hal qilish va xabar berish</h3>
-                  <p>Masullar muammoni hal qilgach, statusni “hal qilindi” deb yangilaydi va bildirishnoma jo‘natadi.
+                  <p>Masullar muammoni hal qilgach, statusni “hal qilindi” deb yangilaydi va bildirishnoma jo'natadi.
                   </p>
                   <div class="sub" style="margin-top:10px">Notify users</div>
                 </div>
@@ -774,7 +813,7 @@
               <div class="slide" data-mode="authority" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>6. Fuqarolik tasdiqi</h3>
-                  <p>Fuqarolar va yaqin foydalanuvchilar orqali yechim tasdiqlanadi va status so‘nggi holatga o‘tadi.
+                  <p>Fuqarolar va yaqin foydalanuvchilar orqali yechim tasdiqlanadi va status so'nggi holatga o'tadi.
                   </p>
                   <div class="sub" style="margin-top:10px">Final verification</div>
                 </div>
@@ -783,7 +822,7 @@
               <div class="slide" data-mode="authority" style="flex:0 0 100%;">
                 <div class="card" style="padding:26px;">
                   <h3>7. Hisobot</h3>
-                  <p>Dashboard statistikasi va tahlillari orqali hudud bo‘yicha ta'sir ko‘rsatiladi.</p>
+                  <p>Dashboard statistikasi va tahlillari orqali hudud bo'yicha ta'sir ko'rsatiladi.</p>
                   <div class="sub" style="margin-top:10px">Reports & KPIs</div>
                 </div>
               </div>
@@ -812,17 +851,17 @@
 
           <div class="card">
             <h3>Foydalanishga Oson</h3>
-            <p>Foydalanuvchi shunchaki muammoni rasmga oladi va yuboradi — qolgan jarayonni tizim o‘zi boshqaradi.</p>
+            <p>Foydalanuvchi shunchaki muammoni rasmga oladi va yuboradi — qolgan jarayonni tizim o'zi boshqaradi.</p>
           </div>
 
           <div class="card">
             <h3>Birlashtiruvchi Platforma</h3>
-            <p>Davlat idoralari, xizmatlar va fuqarolarni yagona tizimda bog‘lab, muammolarni yo‘qolmaydigan jarayonga aylantiradi.</p>
+            <p>Davlat idoralari, xizmatlar va fuqarolarni yagona tizimda bog'lab, hech bir muammolarni e'tibordan chetda qoldirmaslik uchun katta hissa qo'shadi.</p>
           </div>
 
           <div class="card">
-            <h3>To‘liq Shaffoflik</h3>
-            <p>Hamma murojaatlar xaritada ochiq ko‘rinadi: joyi, statusi, jarayoni — hammasi real vaqt rejimida.</p>
+            <h3>To'liq Shaffoflik</h3>
+            <p>Hamma murojaatlar xaritada ochiq ko'rinadi: joyi, statusi, jarayoni — hammasi real vaqt rejimida.</p>
           </div>
 
           <div class="card">
@@ -831,8 +870,8 @@
           </div>
 
           <div class="card">
-            <h3>O‘zbekistonda Yagona</h3>
-            <p>O‘zbekistonda atroh-muhitni muhofaza qilish, idoralar va fuqarolarni birlashtirish uchun ishlab chiqiladigan birinchi platforma.</p>
+            <h3>O'zbekistonda Yagona</h3>
+            <p>O'zbekistonda atrof-muhitni muhofaza qilish, idoralar va fuqarolarni birlashtirish uchun ishlab chiqiladigan birinchi platforma.</p>
           </div>
 
         </div>
@@ -858,17 +897,17 @@
             <div class="card center">
               <h3>Flutter</h3>
               <p>EcoReport mobil ilovasi Flutter yordamida ishlab chiqiladi. Flutter bir xil kod bazasidan iOS va Android uchun yuqori sifatli, tezkor va barqaror interfeys yaratishga imkon beradi. 
-                Fuqarolar tomonidan foto yuborish, GPS aniqlash, bildirishnomalarni qabul qilish va xaritadan muammolarni ko‘rish jarayonlari aynan Flutter UI orqali sodda va intuitiv tarzda amalga oshiriladi.</p>
+                Fuqarolar tomonidan foto yuborish, GPS aniqlash, bildirishnomalarni qabul qilish va xaritadan muammolarni ko'rish jarayonlari aynan Flutter UI orqali sodda va intuitiv tarzda amalga oshiriladi.</p>
             </div>
             <div class="card center">
               <h3>React</h3>
-              <p>Idoralar uchun mo‘ljallangan web panel React asosida quriladi. React’ning komponentlarga bo‘lingan arxitekturasi real vaqt rejimidagi statuslar, kelayotgan murojaatlar, xarita ustidagi harakatlar va yangilanayotgan ma’lumotlarni sahifani yangilamasdan ko‘rsatishga imkon beradi. 
-                Shu orqali xodimlar muammolarni tez ko‘rib chiqishi, filtrlashi va boshqarishi osonlashadi.</p>
+              <p>Idoralar uchun mo'ljallangan web panel React asosida quriladi. React’ning komponentlarga bo'lingan arxitekturasi real vaqt rejimidagi statuslar, kelayotgan murojaatlar, xarita ustidagi harakatlar va yangilanayotgan ma’lumotlarni sahifani yangilamasdan ko'rsatishga imkon beradi. 
+                Shu orqali xodimlar muammolarni tez ko'rib chiqishi, filtrlashi va boshqarishi osonlashadi.</p>
             </div>
             <div class="card center">
               <h3>Mapbox/Google Maps</h3>
-              <p>Frontend qismida muammolarni vizual tarzda ko‘rsatish uchun Mapbox yoki Google Maps API ishlatiladi. 
-                Xarita ustida markerlar, status ranglari, issiqlik xaritalari (heatmap) va masofa hisoblash kabi funksiyalar mavjud bo‘lib, foydalanuvchilarga real muhitdagi holatni aniq tasavvur qilish imkonini beradi.</p>
+              <p>Frontend qismida muammolarni vizual tarzda ko'rsatish uchun Mapbox yoki Google Maps API ishlatiladi. 
+                Xarita ustida markerlar, status ranglari, issiqlik xaritalari (heatmap) va masofa hisoblash kabi funksiyalar mavjud bo'lib, foydalanuvchilarga real muhitdagi holatni aniq tasavvur qilish imkonini beradi.</p>
             </div>
           </div>
         </div>
@@ -878,13 +917,13 @@
           <div class="card-grid">
             <div class="card center">
               <h3>FastAPI</h3>
-              <p>FastAPI EcoReport’ning asosiy API qatlamidir. U yuqori tezlikda so‘rovlarni qayta ishlaydi, async arxitekturasi tufayli rasm yuborish, muammo yaratish, statuslarni yangilash va xarita ma’lumotlarini olish kabi jarayonlarni kechikishsiz boshqaradi. 
+              <p>FastAPI EcoReport’ning asosiy API qatlamidir. U yuqori tezlikda so'rovlarni qayta ishlaydi, async arxitekturasi tufayli rasm yuborish, muammo yaratish, statuslarni yangilash va xarita ma’lumotlarini olish kabi jarayonlarni kechikishsiz boshqaradi. 
                 Platformaning barcha funksional logikasi shu servis orqali ishlaydi.</p>
             </div>
             <div class="card center">
               <h3>Node.js</h3>
               <p>NotNode.js asosan real vaqt funksiyalari uchun xizmat qiladi: push ogohlantirishlar, idoralarga darhol yetkaziladigan xabarlar, “hal qilindi” tasdiqlash bildirishnomalari va geofencing asosidagi yaqin foydalanuvchilarga yuboriladigan alertlar. 
-                Event-driven mexanizmi tufayli minglab foydalanuvchilarni bir paytning o‘zida qo‘llab-quvvatlay oladi.</p>
+                Event-driven mexanizmi tufayli minglab foydalanuvchilarni bir paytning o'zida qo'llab-quvvatlay oladi.</p>
             </div>
             <div class="card center">
               <h3>Nginx</h3>
@@ -899,8 +938,8 @@
           <div class="card-grid">
             <div class="card center">
               <h3>PostgreSQL</h3>
-              <p>EcoReport’ning asosiy ma’lumotlar bazasi PostgreSQL bo‘lib, barcha murojaatlar, foydalanuvchi profillari, tarixiy statuslar, tasdiqlash natijalari va idoralarga yuborilgan loglar shu yerda saqlanadi. 
-                Uning tranzaksion barqarorligi va yuqori aniqligi ko‘p bosqichli jarayonlar uchun juda mos keladi.</p>
+              <p>EcoReport’ning asosiy ma’lumotlar bazasi PostgreSQL bo'lib, barcha murojaatlar, foydalanuvchi profillari, tarixiy statuslar, tasdiqlash natijalari va idoralarga yuborilgan loglar shu yerda saqlanadi. 
+                Uning tranzaksion barqarorligi va yuqori aniqligi ko'p bosqichli jarayonlar uchun juda mos keladi.</p>
             </div>
             <div class="card center">
               <h3>Amazon S3</h3>
@@ -909,8 +948,8 @@
             </div>
             <div class="card center">
               <h3>MinIO</h3>
-              <p>Ichki testlar va mahalliy rivojlantirish jarayonida S3 o‘rnini MinIO egallaydi. 
-                U Amazon S3 bilan to‘liq mos API-ga ega bo‘lgani uchun kodni o‘zgartirmasdan lokal saqlashni qo‘llash imkonini beradi. 
+              <p>Ichki testlar va mahalliy rivojlantirish jarayonida S3 o'rnini MinIO egallaydi. 
+                U Amazon S3 bilan to'liq mos API-ga ega bo'lgani uchun kodni o'zgartirmasdan lokal saqlashni qo'llash imkonini beradi. 
                 Bu prototip va MVP bosqichlarida tezkor rivojlantirishga yordam beradi.</p>
             </div>
           </div>
@@ -922,20 +961,20 @@
             <div class="card center">
               <h3>YOLOv8</h3>
               <p>EcoReport suratlarni avtomatik tahlil qilishda YOLOv8 modelidan foydalanadi. 
-                U chiqindi to‘planishi, yo‘l shikastlanishi, noqonuniy qurilish qoldiqlari, suv sizishi kabi ekologik muammolarni yuqori aniqlik bilan ajratib beradi. 
+                U chiqindi to'planishi, yo'l shikastlanishi, noqonuniy qurilish qoldiqlari, suv sizishi kabi ekologik muammolarni yuqori aniqlik bilan ajratib beradi. 
                 Modelning real-time inference imkoniyati rasm yuklangan zahoti muammo turini aniqlashga imkon beradi.</p>
             </div>
             <div class="card center">
               <h3>PyTorch</h3>
-              <p>AI modeli PyTorch yordamida o‘qitiladi va optimallashtiriladi. 
+              <p>AI modeli PyTorch yordamida o'qitiladi va optimallashtiriladi. 
                 PyTorch’ning moslashuvchan graflari, GPU tezlashtiruvchi mexanizmlari va keng ML ekotizimi modelni tezkor rivojlantirishga, 
-                sinovdan o‘tkazishga va servislarga joylashtirishga katta qulaylik yaratadi.</p>
+                sinovdan o'tkazishga va servislarga joylashtirishga katta qulaylik yaratadi.</p>
             </div>
             <div class="card center">
               <h3>OpenCV</h3>
-              <p>AI modulidan oldin rasm sifati, yorug‘lik, shovqin, kontrast va kesish (cropping) amallari OpenCV orqali bajariladi. 
-                Dastlabki preprocessing AI modelining aniqligini oshiradi va noto‘g‘ri tasniflash ehtimolini kamaytiradi. 
-                Bu tizimning umumiy ishonchliligini sezilarli ravishda ko‘taradi.</p>
+              <p>AI modulidan oldin rasm sifati, yorug'lik, shovqin, kontrast va kesish (cropping) amallari OpenCV orqali bajariladi. 
+                Dastlabki preprocessing AI modelining aniqligini oshiradi va noto'g'ri tasniflash ehtimolini kamaytiradi. 
+                Bu tizimning umumiy ishonchliligini sezilarli ravishda ko'taradi.</p>
             </div>
           </div>
         </div>
@@ -946,21 +985,21 @@
 
       <!-- Roadmap Section -->
       <section id="roadmap">
-        <h2>Yo‘l Xaritasi</h2>
+        <h2>Yo'l Xaritasi</h2>
 
         <div style="margin-top:30px; display:flex; flex-direction:column; gap:18px;">
 
           <!-- 1: Idea & Prototype -->
           <div class="roadmap-item active">
             <div>
-              <h3>1. G‘oya va Prototip</h3>
+              <h3>1. G'oya va Prototip</h3>
               <p>
                 Ekologik muammolarni tahlil qilish, foydalanuvchi ehtiyojlarini aniqlash va dastlabki dizayn oqimlarini
                 shakllantirish. Mobil ilova va idoralar uchun dashboardning interaktiv prototipi yaratiladi. GPS va
-                xarita xizmatlari bilan birinchi integratsiyalar sinovdan o‘tkaziladi.
+                xarita xizmatlari bilan birinchi integratsiyalar sinovdan o'tkaziladi.
               </p>
               <p style="color:var(--text-muted);font-size:0.95rem;margin-top:8px;">
-                <strong>Deliverable:</strong> Prototip, foydalanuvchi oqimlari, boshlang‘ich texnik konsepsiya.
+                <strong>Deliverable:</strong> Prototip, foydalanuvchi oqimlari, boshlang'ich texnik konsepsiya.
               </p>
             </div>
           </div>
@@ -968,15 +1007,15 @@
           <!-- 2: MVP + AI + Routing (merged) -->
           <div class="roadmap-item">
             <div>
-              <h3>2. MVP + AI Integratsiyasi + Avtomatik Yo‘naltirish</h3>
+              <h3>2. MVP + AI Integratsiyasi + Avtomatik Yo'naltirish</h3>
               <p>
                 Asosiy funksiyalar ishlab chiqiladi: rasm yuklash, avtomatik GPS aniqlash, muammo yaratish, statuslarni
                 boshqarish va dashboardga real vaqt rejimida yuborish. Shuningdek, YOLOv8 asosidagi AI modeli
-                suratlarni tahlil qilib, chiqindi, yo‘l shikasti, suv sizishi kabi muammo turlarini avtomatik aniqlaydi.
+                suratlarni tahlil qilib, chiqindi, yo'l shikasti, suv sizishi kabi muammo turlarini avtomatik aniqlaydi.
                 Avtomatik routing orqali muammolar hududga mos ravishda tegishli idoraga yuboriladi.
               </p>
               <p style="color:var(--text-muted);font-size:0.95rem;margin-top:8px;">
-                <strong>Deliverable:</strong> Ishlaydigan MVP, AI tasnifi, avtomatik idora yo‘naltirish, push notifierlar.
+                <strong>Deliverable:</strong> Ishlaydigan MVP, AI tasnifi, avtomatik idora yo'naltirish, push notifierlar.
               </p>
             </div>
           </div>
@@ -987,8 +1026,8 @@
               <h3>3. Pilot va Beta Sinov</h3>
               <p>
                 Tanlangan tuman yoki shahar hududida real foydalanuvchilar va mahalliy idoralar bilan
-                pilot jarayon o‘tkaziladi. AI natijalari optimallashtiriladi, interfeys qulaylashtiriladi,
-                jamoaviy tasdiqlash jarayoni sinovdan o‘tkaziladi va tizim barqarorligi tekshiriladi.
+                pilot jarayon o'tkaziladi. AI natijalari optimallashtiriladi, interfeys qulaylashtiriladi,
+                jamoaviy tasdiqlash jarayoni sinovdan o'tkaziladi va tizim barqarorligi tekshiriladi.
               </p>
               <p style="color:var(--text-muted);font-size:0.95rem;margin-top:8px;">
                 <strong>Deliverable:</strong> Pilot natijalari, optimizatsiyalar, barqarorlik yaxshilanishlari.
@@ -1001,9 +1040,9 @@
             <div>
               <h3>4. Ishga Tushirish va Kengaytirish</h3>
               <p>
-                Platformani rasmiy ishga tushirish, server infratuzilmasini kengaytirish, ko‘proq hududlarni
-                qo‘shish va idoralar bilan to‘liq integratsiyani yo‘lga qo‘yish. Monitoring, SLA tizimi,
-                xavfsizlik (SSL, audit), CI/CD jarayonlari va qo‘llanmalar to‘liq yakunlanadi.
+                Platformani rasmiy ishga tushirish, server infratuzilmasini kengaytirish, ko'proq hududlarni
+                qo'shish va idoralar bilan to'liq integratsiyani yo'lga qo'yish. Monitoring, SLA tizimi,
+                xavfsizlik (SSL, audit), CI/CD jarayonlari va qo'llanmalar to'liq yakunlanadi.
               </p>
               <p style="color:var(--text-muted);font-size:0.95rem;margin-top:8px;">
                 <strong>Deliverable:</strong> Rasmiy launch, kengaygan hududlar, xavfsiz infra, hujjatlar.
@@ -1065,7 +1104,7 @@
       <section id="contact">
         <h2>Aloqa Uchun</h2>
         <p style="max-width:600px;margin:0;color:var(--text-muted);">
-          Savollar, hamkorlik yoki loyiha bo‘yicha murojaat uchun jamoa a’zolari bilan bog‘lanishingiz mumkin.
+          Savollar, hamkorlik yoki loyiha bo'yicha murojaat uchun jamoa a’zolari bilan bog'lanishingiz mumkin.
         </p>
 
         <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;">
@@ -1136,7 +1175,7 @@
         </div>
 
         <div style="margin-top:50px;text-align:center;">
-          <p style="color:var(--text-muted); margin-bottom:10px;">Loyiha bo‘yicha rasmiy email:</p>
+          <p style="color:var(--text-muted); margin-bottom:10px;">Loyiha bo'yicha rasmiy email:</p>
           <a href="mailto:goyibnazarovasliddin@gmail.com" class="btn">goyibnazarovasliddin@gmail.com</a>
         </div>
 
