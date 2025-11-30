@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="uz">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GROW — AI500 Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-deep: #0b6b3a;
+      --green-light: #37a16a;
+      --green-neon: #68d294;
+      --bg-dark: #05140f;
+      --card-bg: rgba(11, 31, 26, 0.6);
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --transition: 300ms cubic-bezier(.2, .9, .3, 1);
+    }
+
+    /* Reset & Base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #020806 100%);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3 {
+      font-weight: 800;
+      color: var(--green-neon);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: clamp(28px, 5vw, 42px);
+      margin-bottom: 16px;
+      text-shadow: 0 0 25px rgba(104, 210, 148, 0.25);
+    }
+
+    p {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-size: 1.05rem;
+    }
+
+    /* Utilities */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    .flex {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap
+    }
+
+    .center {
+      text-align: center;
+      align-items: center;
+      justify-content: center
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none
+    }
+
+    /* Buttons */
+    .btn {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-light));
+      color: white;
+      padding: 16px 36px;
+      border-radius: 14px;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(11, 107, 58, 0.3);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(11, 107, 58, 0.6);
+      filter: brightness(1.1);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 5px 15px rgba(11, 107, 58, 0.3);
+    }
+
+    /* Splash Screen */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at center, #0d2e21 0%, #000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .splash-title {
+      font-size: clamp(60px, 18vw, 160px);
+      color: transparent;
+      -webkit-text-stroke: 2px var(--green-neon);
+      text-shadow: 0 0 60px rgba(104, 210, 148, 0.5);
+      animation: pulse 3s infinite alternate;
+    }
+
+    @keyframes pulse {
+      to {
+        text-shadow: 0 0 100px rgba(104, 210, 148, 0.9);
+      }
+    }
+
+    /* Loader */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: #020806;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--green-neon);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(5, 20, 15, 0.85);
+      backdrop-filter: blur(16px);
+      padding: 8px;
+      border-radius: 100px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      display: flex;
+      gap: 4px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      max-width: 90vw;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 10px 20px;
+      border-radius: 100px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    /* Hover & Active State */
+    .nav-link:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      background: var(--green-deep);
+      color: white;
+      box-shadow: 0 4px 20px rgba(11, 107, 58, 0.5);
+    }
+
+    /* Sections */
+    section {
+      padding: 120px 0;
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero */
+    #hero {
+      text-align: center;
+      padding-top: 180px;
+      min-height: 100vh;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 9vw, 96px);
+      line-height: 1.05;
+      margin-bottom: 24px;
+      background: linear-gradient(to bottom right, #fff 30%, var(--green-neon));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      max-width: 680px;
+      margin: 0 auto 48px;
+      opacity: 0.9;
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 40px 32px;
+      border-radius: 24px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.06), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: var(--green-light);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: var(--green-neon);
+      display: inline-block;
+    }
+
+    .card h3 {
+      color: white;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+    }
+
+    /* Team */
+    .team-card {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--green-deep), #000);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--green-neon);
+      border: 2px solid var(--green-light);
+      box-shadow: 0 10px 30px rgba(11, 107, 58, 0.2);
+    }
+
+    /* Roadmap */
+    .roadmap-item {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 40px;
+      align-items: flex-start;
+      border-left: 3px solid rgba(255, 255, 255, 0.1);
+      padding-left: 40px;
+      position: relative;
+    }
+
+    .roadmap-item::before {
+      content: '';
+      position: absolute;
+      left: -11px;
+      top: 4px;
+      width: 20px;
+      height: 20px;
+      background: var(--bg-dark);
+      border: 3px solid var(--text-muted);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .roadmap-item.active {
+      border-left-color: var(--green-deep);
+    }
+
+    .roadmap-item.active::before {
+      background: var(--green-neon);
+      border-color: var(--green-neon);
+      box-shadow: 0 0 20px var(--green-neon);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      margin-top: 60px;
+    }
+
+    /* Responsive Mobile Optimization */
+    @media(max-width:768px) {
+
+      /* Navigation: Bottom Bar */
+      nav {
+        top: auto;
+        bottom: 20px;
+        width: 92%;
+        max-width: 400px;
+        justify-content: space-between;
+        padding: 12px 20px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        /* Firefox */
+      }
+
+      nav::-webkit-scrollbar {
+        display: none;
+        /* Chrome/Safari */
+      }
+
+      .nav-link {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+
+      /* Typography & Spacing */
+      section {
+        padding: 80px 0;
+        min-height: auto;
+      }
+
+      #hero {
+        padding-top: 120px;
+        min-height: 90vh;
+      }
+
+      .hero-title {
+        font-size: 42px;
+        margin-bottom: 16px;
+      }
+
+      .hero-sub {
+        font-size: 1rem;
+        margin-bottom: 32px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .btn {
+        padding: 14px 28px;
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash">
+    <h1 class="splash-title">EcoReport</h1>
+    <p style="margin-top:20px; font-size:1.2rem; letter-spacing:2px;">TABIAT UCHUN BARCHAMIZ JAVOBGARMIZ</p>
+    <button class="btn" id="startBtn" style="margin-top:40px">BOSHLASH</button>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader" class="hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="app" class="hidden">
+
+    <nav>
+      <a href="#hero" class="nav-link active">Asosiy</a>
+      <a href="#problem" class="nav-link">Muammo</a>
+      <a href="#solution" class="nav-link">Yechim</a>
+      <a href="#why-us" class="nav-link">Nega Biz?</a>
+      <a href="#tech" class="nav-link">Texnologiya</a> 
+      <a href="#roadmap" class="nav-link">Reja</a>
+      <a href="#team" class="nav-link">Jamoa</a>
+      <a href="#contact" class="nav-link">Aloqa</a> 
+    </nav>
+
+    <div class="container">
+
+      <!-- Hero Section -->
+      <section id="hero" class="visible" aria-labelledby="hero-heading" role="region">
+          <h1 id="hero-heading" class="splash-title"
+              style="
+                font-size:clamp(70px,16vw,160px);
+                margin-bottom:12px;
+                line-height:1;
+              ">
+            EcoReport
+          </h1>
+
+          <div 
+            style="
+              margin-top:20px;
+              font-size:clamp(22px,4vw,44px);
+              letter-spacing:3px;
+              font-weight:700;
+              color:var(--green-neon);
+              text-shadow:0 0 45px rgba(104,210,148,0.45);
+              margin-bottom:36px;
+            ">
+            TABIAT UCHUN BARCHAMIZ JAVOBGARMIZ
+          </div>
+
+          <p class="hero-sub" style="max-width:760px;margin:14px auto 22px;">
+            EcoReport — atrof-muhit muammolarini birgalikda aniqlash va hal qilish uchun yaratilgan aqlli platforma. 
+            Suratga oling, yuboring va natijani real vaqtida kuzating.
+          </p>
+
+          <div class="flex center" style="margin-top:28px;gap:14px;flex-wrap:wrap;">
+            <button class="btn" id="heroStartBtn" aria-label="Boshlash — GROW ilovasini ishga tushirish">
+              <a href="#problem" style="color:var(--text-muted); text-decoration:none;">Boshlash</a>
+            </button>
+          </div>
+      </section>
+      <!-- End Hero Section -->
+
+
+      <!-- Problem Section -->
+      <section id="problem">
+        <h2>Muammo</h2>
+
+        <p>
+          O‘zbekiston bo‘ylab ekologik va infratuzilma bilan bog‘liq ko‘plab real muammolar mavjud:
+          chiqindilarning uzoq muddat yig‘ilib qolishi, yo‘l buzilishlari, suv sizib chiqishi, chiqindilarning noqonuniy tarzda yoqib yuborilishi, yashil maydonlarga zarar yetishi.
+          Bu muammolar ko‘pincha mas'ullar tomonidan vaqtida aniqlanmaydi yoki tegishli idoralarga yetib bormaydi.
+        </p>
+
+        <div class="card-grid">
+
+          <div class="card">
+            <div class="card-icon">🗑️</div>
+            <h3>Chiqindilar Yig‘ilib Qolishi</h3>
+            <p>Belgilanmagan joyga tashlangan yoki vaqtida olib ketilmagan chiqindilar ekologiya va sanitariyaga katta zarar yetkazadi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">🚧</div>
+            <h3>Yo‘llardagi Muammolar</h3>
+            <p>Yo‘llardagi hosil bo‘lgan chuqurlar va yoriqlar transportlar va piyodalar harakati xavfsizligini keskin pasaytiradi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">💧</div>
+            <h3>Suvning Isrof Bo‘lishi</h3>
+            <p>E'tiborsiz qoldirilgan suv sizib chiqishi holatlari infratuzilmani yemiradi va resurslarni isrof qiladi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">🌳</div>
+            <h3>Yashil Maydonlar Nazorati</h3>
+            <p>Daraxtlarning noqonuniy kesilishi va bog‘larning buzilishi hudud ekologiyasiga sezilarli putur yetkazadi.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔥</div>
+            <h3>Chiqindilarning Yoqib Yuborilishi</h3>
+            <p>Nazorat­siz yoqilgan chiqindilar havoni ifloslantiradi va sog‘liq uchun katta xavf tug‘diradi.</p>
+          </div>
+
+
+        </div>
+      </section>
+
+
+      <!-- Solution Section -->
+<!-- Solution Section -->
+      <section id="solution">
+        <h2>Yechim: EcoReport</h2>
+
+        <p>
+          EcoReport ekologik va infratuzilma muammolarini tez, shaffof va aniq hal qilish uchun yaratilgan.
+          Platforma sun’iy intellekt, geolokatsiya va jamoaviy tasdiqlash mexanizmini birlashtiradi.
+        </p>
+
+        <div class="card-grid">
+
+          <div class="card">
+            <div class="card-icon">📸</div>
+            <h3>Foto Qabul</h3>
+            <p>Fuqaro muammoni rasmga olib, bir zumda yuboradi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">🤖</div>
+            <h3>AI Tahlil</h3>
+            <p>Suratdagi muammo turi YOLO asosida avtomatik aniqlanadi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">🗺️</div>
+            <h3>Xarita</h3>
+            <p>Muammo GPS asosida xaritada ko‘rsatiladi va status yangilanadi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">🔔</div>
+            <h3>Ogohlantirish</h3>
+            <p>Mas’ul idora xabardor qilinadi va jarayon kuzatib boriladi.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">👥</div>
+            <h3>Tasdiqlash</h3>
+            <p>Yaqin foydalanuvchilar yechimni tasdiqlashi mumkin.</p>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- Why Us Section -->
+      <section id="why-us">
+        <h2>Nega Aynan Biz?</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Ilmiy Yondashuv</h3>
+            <p>Biz shunchaki taxmin qilmaymiz, balki aniq ma'lumotlar va Tohist API tahlillariga tayanamiz.</p>
+          </div>
+          <div class="card">
+            <h3>Real-Time Moslashuv</h3>
+            <p>Ob-havo o‘zgarganda bizning AI rejalarni avtomatik yangilaydi.</p>
+          </div>
+          <div class="card">
+            <h3>Offline Rejim</h3>
+            <p>Internet yo‘q hududlarda ham fermerlar uchun muhim ma'lumotlar mavjud.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tech Stack & Implementation -->
+      <section id="tech">
+        <h2>Texnologik Yechim</h2>
+        <p>Bizning platformamiz quyidagi zamonaviy texnologiyalar asosida qurilgan:</p>
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+          <div class="card center">
+            <h3>Python / ML</h3>
+          </div>
+          <div class="card center">
+            <h3>Tohist API</h3>
+          </div>
+          <div class="card center">
+            <h3>Flutter</h3>
+          </div>
+          <div class="card center">
+            <h3>FastAPI</h3>
+          </div>
+          <div class="card center">
+            <h3>PostgreSQL</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roadmap Section -->
+      <section id="roadmap">
+        <h2>Yo‘l Xaritasi</h2>
+        <div style="margin-top:40px">
+          <div class="roadmap-item active">
+            <div>
+              <h3>G‘oya va Prototip (Hozirgi bosqich)</h3>
+              <p>Muammoni o‘rganish, Tohist API integratsiyasi, UI/UX dizayn.</p>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <div>
+              <h3>MVP (Minimal Viable Product)</h3>
+              <p>Asosiy funksiyalar: Yer tahlili, Ekin tavsiyasi, Offline rejim.</p>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <div>
+              <h3>Beta Test</h3>
+              <p>Fermerlar bilan sinov, xatolarni tuzatish, bozorga kirish.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Team Section -->
+      <section id="team">
+        <h2>Jamoa</h2>
+        <div class="card-grid">
+          <div class="card team-card">
+            <div class="team-avatar">AI</div>
+            <h3>Jamoa A'zosi 1</h3>
+            <p style="color:var(--green-neon)">AI/ML Engineer</p>
+            <p class="sub">Python, TensorFlow, Data Science</p>
+          </div>
+          <div class="card team-card">
+            <div class="team-avatar">FE</div>
+            <h3>Jamoa A'zosi 2</h3>
+            <p style="color:var(--green-neon)">Frontend Developer</p>
+            <p class="sub">Flutter, Mobile UX, Design</p>
+          </div>
+          <div class="card team-card">
+            <div class="team-avatar">BE</div>
+            <h3>Jamoa A'zosi 3</h3>
+            <p style="color:var(--green-neon)">Backend Developer</p>
+            <p class="sub">FastAPI, Database, Cloud</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" style="text-align:center">
+        <h2>Bog‘lanish</h2>
+        <p>Savollar yoki hamkorlik uchun:</p>
+        <a href="mailto:ai500@itcommunity.uz" class="btn">ai500@itcommunity.uz</a>
+      </section>
+
+    </div>
+
+    <footer>
+      <p>&copy; 2025 GROW - AI500 Stage 1 Demo.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Elements
+    const splash = document.getElementById('splash');
+    const loader = document.getElementById('loader');
+    const app = document.getElementById('app');
+    const startBtn = document.getElementById('startBtn');
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Splash -> Loader -> App Flow
+    startBtn.addEventListener('click', () => {
+      splash.style.opacity = '0';
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        loader.classList.remove('hidden');
+
+        // Simulate loading
+        setTimeout(() => {
+          loader.style.opacity = '0';
+          setTimeout(() => {
+            loader.classList.add('hidden');
+            app.classList.remove('hidden');
+            // Trigger animations for first section
+            checkScroll();
+          }, 500);
+        }, 1500);
+      }, 500);
+    });
+
+    // Improved Scroll Spy / Active Nav
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px', // Active when section is near top/center
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Highlight Nav
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+
+          // Reveal Section
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
+
+    // Fallback for initial load
+    function checkScroll() {
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8) {
+          section.classList.add('visible');
+        }
+      });
+    }
+
+    // Mouse Move Effect for Cards (Glow)
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+# Implementation Plan - Website Build
+
+## Goal Description
+Build/Refine the "GROW" demo website to meet the **AI500 Stage 1** competition requirements. The site must clearly present the Problem, Solution, Team, "Why Us", Roadmap, and Technical Implementation (including AI usage).
+
+## User Review Required
+- [ ] **PRD Review**: I need the PRD to populate the specific content for each section.
+- [ ] **Team Details**: Need full names, roles, skills, and links for all registered team members.
+- [ ] **Tech Stack**: Confirmation of the specific tools/AI models used.
+
+## Proposed Changes
+The website structure will be updated to strictly follow the competition criteria:
+
+### Structure Updates
+1.  **Splash Screen (Design Req)**
+    - Big "GROW" text (Glowing).
+    - "Boshlash" (Start) button.
+    - Animation on click -> Loader -> Main Site.
+2.  **Problem (`Muammo`)**
+    - Content: Farmers rely on intuition, leading to wrong crops, water waste, and low yield.
+3.  **Solution (`Yechim`)**
+    - Content: GROW App (AI Land Analysis, Crop Recs, Schedules).
+    - Benefits: +15-25% Yield, -30-40% Costs, Water saving.
+4.  **How it Works (`Qanday ishlaydi`)**
+    - Steps: 1. Land Analysis (Tohist API), 2. Crop Selection (AI), 3. Prep Plan, 4. Planting, 5. Schedules, 6. Monitoring.
+5.  **Roadmap (`Yo‘l xaritasi`)**
+    - Stages: Idea -> Prototype (Current) -> MVP -> Launch.
+6.  **Team (`Jamoa`)**
+    - *Note: User did not provide specific names. Using placeholders.*
+    - Roles: AI/ML, Frontend, Backend/Fullstack.
+7.  **Why Us (`Nega aynan biz`)**
+    - Focus: Scientific approach, Data-driven, Real-time adaptation.
+8.  **Contact (`Bog‘lanish`)**
+    - Email: ai500@itcommunity.uz (from prompt) / Team contact.
+
+### Design Specifications
+-   **Theme**: Dark Green (`#0b6b3a`, `#05140f`).
+-   **Effects**: Glowing text for headings, Fade-up animations for sections.
+-   **Interactions**: Hover effects on buttons, smooth scrolling.
+
+### Technical Tasks
+-   [ ] Refactor [index.html](file:///c:/Users/user/Downloads/AI500/index.html) to match the PRD content exactly.
+-   [ ] Ensure "Why Us" and "Tech Stack" sections are present.
+-   [ ] Implement the specific Splash -> Loader -> Home flow.
