@@ -260,7 +260,7 @@
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 32px;
       margin-top: 48px;
-      width: 100%;
+      /* width: 100%; */
     }
 
     .card {
@@ -435,18 +435,28 @@
     }
 
     .flow-carousel .slides {
-      transition: transform 420ms cubic-bezier(.2, .9, .3, 1);
       display: flex;
+      gap: 18px; /* keep same gap as your inline style */
+      transition: transform 420ms cubic-bezier(.2, .9, .3, 1);
+      will-change: transform;
+      align-items: stretch;
     }
+    :root { --slide-w: 360px; }
 
+    /* Each slide has exact width; text overflow increases height only */
     .slide {
-      padding: 10px 6px;
       box-sizing: border-box;
+      flex: 0 0 var(--slide-w);
+      width: var(--slide-w);
+      padding: 10px 6px;
       min-height: 220px;
       display: flex;
-      align-items: center;
+      align-items: stretch; /* let inner card expand vertically */
       justify-content: center;
     }
+
+    .slide .card h3,
+    .slide .card p { word-wrap: break-word; }
 
     .flow-dot {
       width: 10px;
@@ -1248,8 +1258,9 @@
   const nextBtn = document.getElementById('flow-next');
   const dotsWrap = document.getElementById('flow-dots');
   const stepBadge = document.getElementById('step-badge');
+  const carousel = slidesEl.parentElement; // .flow-carousel element
 
-  // default mode
+  // default mode & index
   let mode = 'user';
   let index = 0;
 
@@ -1273,19 +1284,43 @@
     stepBadge.textContent = (index + 1) + '-qadam';
   }
 
-  // move to i-th slide of current mode
+  // compute slide width + gap (px)
+  function getMetrics() {
+    const slide = slides[0];
+    const slideW = slide ? slide.getBoundingClientRect().width : 0;
+    const styles = getComputedStyle(slidesEl);
+    const gap = parseFloat(styles.gap || styles.columnGap || 0);
+    const containerW = carousel.clientWidth;
+    return { slideW, gap, containerW };
+  }
+
+  // center the given absolute slide index (found) inside carousel
+  function translateToFoundIndex(found) {
+    const { slideW, gap, containerW } = getMetrics();
+    const step = slideW + gap;
+    // position of left edge of found slide relative to slidesEl's left = found * step
+    const leftPos = found * step;
+    // calculate translate so that found slide is centered in container:
+    // we want leftPos - translate = (containerW - slideW) / 2  -> translate = leftPos - centerOffset
+    const centerOffset = (containerW - slideW) / 2;
+    const translate = Math.max(0, leftPos - centerOffset);
+    slidesEl.style.transform = `translateX(-${translate}px)`;
+  }
+
+  // goTo i-th slide of current mode
   function goTo(i) {
     const modeSlides = getModeSlides(mode);
     index = Math.max(0, Math.min(i, modeSlides.length - 1));
-    // find absolute position in all slides
-    let absIndex = 0, found = -1;
+    // find absolute index (found) among all slides
+    let found = 0;
+    let counter = 0;
     for (let k = 0; k < slides.length; k++) {
       if (slides[k].dataset.mode === mode) {
-        if (slides[k] === modeSlides[index]) { found = k; break; }
+        if (counter === index) { found = k; break; }
+        counter++;
       }
     }
-    if (found === -1) found = 0;
-    slidesEl.style.transform = `translateX(-${found * 100}%)`;
+    translateToFoundIndex(found);
     renderDots();
     updateStepBadge();
   }
@@ -1299,7 +1334,7 @@
     goTo((index - 1 + len) % len);
   }
 
-  // TAB SWITCH: make sure active class toggles correctly and mode changes
+  // set active/secondary classes for flow-tab buttons
   function setActiveTab(targetMode) {
     tabs.forEach(t => {
       const m = t.dataset.mode;
@@ -1307,10 +1342,15 @@
         t.classList.add('active');
         t.classList.remove('secondary');
         t.setAttribute('aria-pressed', 'true');
+        // remove interfering inline color/background if present
+        t.style.removeProperty('background');
+        t.style.removeProperty('color');
       } else {
         t.classList.remove('active');
         t.classList.add('secondary');
         t.setAttribute('aria-pressed', 'false');
+        t.style.removeProperty('background');
+        t.style.removeProperty('color');
       }
     });
   }
@@ -1318,19 +1358,21 @@
   tabs.forEach(t => {
     t.addEventListener('click', () => {
       const clickedMode = t.dataset.mode;
-      if (clickedMode === mode) return; // already active
+      if (clickedMode === mode) return;
       mode = clickedMode;
       index = 0;
       setActiveTab(mode);
 
-      // find first slide of the selected mode and move there
+      // find first slide of the new mode and center it
       const allSlides = slidesEl.querySelectorAll('.slide');
+      let firstFound = 0, counter = 0;
       for (let k = 0; k < allSlides.length; k++) {
         if (allSlides[k].dataset.mode === mode) {
-          slidesEl.style.transform = `translateX(-${k * 100}%)`;
+          firstFound = k;
           break;
         }
       }
+      translateToFoundIndex(firstFound);
       renderDots();
       updateStepBadge();
     });
@@ -1340,13 +1382,13 @@
   nextBtn.addEventListener('click', next);
   prevBtn.addEventListener('click', prev);
 
-  // keyboard navigation
+  // keyboard
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') next();
     if (e.key === 'ArrowLeft') prev();
   });
 
-  // basic swipe
+  // touch swipe (keeps existing simple logic)
   (function () {
     let startX = 0, currentX = 0, dragging = false;
     slidesEl.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; dragging = true; });
@@ -1359,19 +1401,35 @@
     });
   })();
 
-  // init UI: set active tab and position slides to first of default mode
+  // recalc on resize so centered slide stays centered
+  window.addEventListener('resize', () => {
+    // recompute position for current index
+    const modeSlides = getModeSlides(mode);
+    // find absolute found index
+    let found = 0, counter = 0;
+    for (let k = 0; k < slides.length; k++) {
+      if (slides[k].dataset.mode === mode) {
+        if (counter === index) { found = k; break; }
+        counter++;
+      }
+    }
+    translateToFoundIndex(found);
+  });
+
+  // init
   (function init() {
     setActiveTab(mode);
-    // position to first slide of mode
+    // position to first slide of default mode
     const allSlides = slidesEl.querySelectorAll('.slide');
     for (let k = 0; k < allSlides.length; k++) {
-      if (allSlides[k].dataset.mode === mode) { slidesEl.style.transform = `translateX(-${k * 100}%)`; break; }
+      if (allSlides[k].dataset.mode === mode) { translateToFoundIndex(k); break; }
     }
     renderDots();
     updateStepBadge();
   })();
 
 })();
+
 
     // Elements
     const splash = document.getElementById('splash');
