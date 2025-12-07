@@ -393,6 +393,23 @@ body.chat-lock {
   z-index: 2100;
 }
 
+/* Bot is typing animation */
+.typing-text {
+  opacity: 0.85;
+  font-style: italic;
+  animation: dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: "Yozmoqda."; }
+  25%  { content: "Yozmoqda.."; }
+  50%  { content: "Yozmoqda..."; }
+  75%  { content: "Yozmoqda.."; }
+  100% { content: "Yozmoqda."; }
+}
+
+
+
   </style>
 </head>
 <body>
@@ -528,12 +545,7 @@ body.chat-lock {
   </footer>
 
   <script>
-  // 🔐 Bu yerga o'zing kiritasan:
-  const OPENAI_API_KEY = "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";   // masalan: "sk-..."
-  const ASSISTANT_ID   = "asst_Jj77qSopF9zV0gYlLrmDs2M2";     // Assistant ID
 
-  // Bitta sahifa ichida bitta thread ishlatamiz
-  let OPENAI_THREAD_ID = null;
 
   // karta glow effekti (seniki o'zgarishsiz)
   document.querySelectorAll('.card').forEach(card => {
@@ -620,135 +632,56 @@ backdrop.addEventListener('click', closeChat);
              "Aniqroq savol bersangiz, sizni qiziqtirgan jihat bo‘yicha batafsil javob beraman 😊";
     }
 
-    // 🧠 Thread ID bo'lmasa — yaratib beradi
-    async function ensureThreadId(headers) {
-      if (OPENAI_THREAD_ID) return OPENAI_THREAD_ID;
+async function sendMessage() {
 
-      const res = await fetch("https://api.openai.com/v1/threads", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({})
-      });
+  const text = input.value.trim();
+  if (!text) return;
 
-      if (!res.ok) {
-        throw new Error("Thread yaratib bo'lmadi: " + res.status);
-      }
-      const data = await res.json();
-      OPENAI_THREAD_ID = data.id;
-      return OPENAI_THREAD_ID;
-    }
+  appendBubble('user', text);
+  input.value = '';
 
-    // 🔗 Assistants API bilan STREAMING
-    async function askOpenAIStreaming(userText, botBubble) {
-      if (!OPENAI_API_KEY || !ASSISTANT_ID) {
-        throw new Error("API kalit yoki ASSISTANT_ID kiritilmagan");
-      }
+  // ⏳ "Yozmoqda..." animatsiyasi
+  const loadingBubble = appendBubble('bot', 'Yozmoqda.');
+  loadingBubble.classList.add('typing-text');
 
-      const headers = {
-        "Authorization": "Bearer " + OPENAI_API_KEY,
-        "Content-Type": "application/json",
-        "OpenAI-Beta": "assistants=v2"
-      };
+  let dots = 1;
 
-      // 1) Thread tayyor bo'lsin
-      const threadId = await ensureThreadId(headers);
+  const typingInterval = setInterval(() => {
+    dots = (dots % 3) + 1;
+    loadingBubble.textContent = 'Yozmoqda' + '.'.repeat(dots);
+  }, 400);
 
-      // 2) User xabarini thread'ga qo'shamiz
-      const msgRes = await fetch(
-        `https://api.openai.com/v1/threads/${threadId}/messages`,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            role: "user",
-            content: userText
-          })
-        }
-      );
-      if (!msgRes.ok) {
-        throw new Error("Xabarni thread'ga qo'shishda xatolik: " + msgRes.status);
-      }
+  try {
 
-      // 3) Run'ni STREAM rejimida ishga tushiramiz
-      const runRes = await fetch(
-        `https://api.openai.com/v1/threads/${threadId}/runs`,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            assistant_id: ASSISTANT_ID,
-            stream: true
-          })
-        }
-      );
+    const res = await fetch('/.netlify/functions/chat', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
 
-      if (!runRes.ok) {
-        throw new Error("Run yaratib bo'lmadi: " + runRes.status);
-      }
+    const data = await res.json();
 
-      // Browserda ReadableStream orqali SSE ni o'qish
-      const reader = runRes.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let buffer = "";
+    clearInterval(typingInterval);
+    loadingBubble.classList.remove('typing-text');
 
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
+    loadingBubble.textContent = data.answer;
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
+  } catch (err) {
 
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed.startsWith("data:")) continue;
+    clearInterval(typingInterval);
+    loadingBubble.classList.remove('typing-text');
 
-          const dataStr = trimmed.slice(5).trim();
-          if (!dataStr || dataStr === "[DONE]") {
-            continue;
-          }
+    loadingBubble.textContent =
+      localAnswer(text) +
+      "\n\n(⚠️ Server bilan aloqa bo‘lmadi)";
+  }
 
-          let evt;
-          try { evt = JSON.parse(dataStr); } catch { continue; }
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
 
-          // text delta qismlarini bubble'ga qo'shamiz
-          if (evt.object === "thread.message.delta") {
-            const parts = evt.delta?.content || [];
-            for (const part of parts) {
-              if (part.type === "text" && part.text?.value) {
-                botBubble.textContent += part.text.value;
-                messagesEl.scrollTop = messagesEl.scrollHeight;
-              }
-            }
-          }
-        }
-      }
 
-      if (!botBubble.textContent.trim()) {
-        botBubble.textContent = "Javob matni bo'sh qaytdi.";
-      }
-    }
 
-    async function sendMessage() {
-      const text = input.value.trim();
-      if (!text) return;
 
-      appendBubble('user', text);
-      input.value = '';
-
-      // Streaming uchun bo'sh bot bubble
-      const botBubble = appendBubble('bot', '...');
-      botBubble.textContent = '';
-
-      try {
-        await askOpenAIStreaming(text, botBubble);
-      } catch (err) {
-        console.error(err);
-        botBubble.textContent = localAnswer(text) +
-          "\n\n(⚠️ OpenAI API ga to'g'ridan-to'g'ri ulanib bo'lmadi, lokal javob.)";
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      }
-    }
 
     sendBtn.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => {
