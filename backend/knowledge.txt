@@ -1,0 +1,235 @@
+# PROJECT_OVERVIEW
+
+EcoReport is an AI-powered platform that connects citizens with government agencies.
+Users can submit photos of environmental or infrastructure problems.
+The system classifies the issue with AI and routes it to the responsible department.
+Citizens can track resolution progress in real-time.
+
+---
+
+# MISSION
+
+The mission of EcoReport is to increase citizen participation, ensure transparency,
+and accelerate problem resolution using artificial intelligence.
+
+---
+
+# PROBLEMS
+
+Common issues addressed by the platform:
+- Unreported garbage accumulation.
+- Road damage and potholes.
+- Water leaks and flooding.
+- Illegal waste burning.
+- Damage to green areas.
+- Construction waste dumping.
+
+---
+
+# SOLUTION
+
+EcoReport provides:
+- Mobile app for citizens to submit photo reports with GPS location.
+- Web dashboard for government operators to manage reported issues.
+- AI-based classification using YOLOv8.
+- Live map visualization.
+- Crowd verification to validate completed work.
+- Push notifications and status updates.
+
+---
+
+# KEY_FEATURES
+
+1. Photo issue reporting.
+2. GPS-based geolocation.
+3. Automated AI classification.
+4. Routing to responsible agencies.
+5. Task assignment workflow.
+6. Citizen verification system.
+7. Real-time map tracking.
+8. User activity history and profiles.
+
+---
+
+# USERS
+
+Platform users include:
+- Citizens submitting reports.
+- Municipal departments handling issues.
+- Environmental inspection agencies.
+
+---
+
+# STATUS
+
+The project currently operates as an MVP prototype.
+UI and UX flows are prepared.
+AI model training is ongoing.
+FastAPI is recommended as the main backend architecture.
+
+---
+
+# NEXT_STEPS
+
+- Launch full MVP.
+- Run city-level pilot programs.
+- Deploy continuous AI retraining pipelines.
+- Add analytics and KPI dashboards.
+
+---
+
+# AI_MODEL
+
+EcoReport uses the YOLOv8 model for real-time object detection and classification.
+
+---
+
+# DETECTION_CLASSES
+
+- Waste accumulation.
+- Road damage.
+- Water leakage.
+- Illegal burning activity.
+- Tree/green area damage.
+- Construction waste.
+
+---
+
+# INPUT_OUTPUT
+
+INPUT:
+- Image file (JPEG or PNG).
+- GPS coordinates.
+- Timestamp.
+
+OUTPUT:
+- Detected issue category.
+- Confidence score.
+- Bounding box coordinates (when applicable).
+- Short caption summary.
+- Detailed explanation caption.
+
+---
+
+# INFERENCE_PIPELINE
+
+1. Image upload to backend.
+2. Preprocessing with OpenCV.
+3. AI inference using YOLOv8.
+4. Postprocessing and filtering.
+5. Caption generation.
+6. Storing and returning results.
+
+---
+
+# PERFORMANCE
+
+The system supports GPU and optimized CPU inference.
+Batch processing improves throughput.
+
+---
+
+# DASHBOARD_OVERVIEW
+
+Administrators access a dashboard showing:
+- Issue map with real-time markers.
+- KPI cards.
+- Status tables.
+- Assignment and verification workflows.
+
+---
+
+# DASHBOARD_HOME
+
+- KPI summary cards: New, In Progress, Resolved, Awaiting Verification.
+- Interactive map view.
+- Recent issues table.
+
+---
+
+# TASK_ASSIGNMENT
+
+Issues are assigned to departments with deadlines and instructions.
+
+---
+
+# FILTERING
+
+Dashboard filters include:
+- Issue category.
+- Location.
+- Status.
+- Date range.
+- Free text search.
+
+---
+
+# VERIFICATION
+
+Resolved reports enter a verification queue for citizen approval or rejection.
+
+---
+
+# ANALYTICS
+
+Dashboards contain:
+- Bar, pie and line charts.
+- Geographic heatmaps.
+
+---
+
+# NOTIFICATIONS
+
+System alerts include:
+- New reports.
+- Deadline reminders.
+- Verification requests.
+
+---
+
+# MOBILE_FLOW
+
+Splash ? Register ? Login ? Map Home ? Camera ? Location Picker ? Review ? Submit ? Status Tracking ? My Issues ? Profile
+
+---
+
+# AUTH
+
+Authentication uses phone-based OTP login.
+Optional Google Sign-In supported.
+
+---
+
+# REPORT_FLOW
+
+Camera ? GPS ? Confirm location ? Review ? Submit ? Receive Report ID
+
+---
+
+# API
+
+POST /api/issues — submit new report  
+GET /api/issues/{id} — issue detail  
+POST /api/ask — chatbot interaction
+
+---
+
+# QNA
+
+What is EcoReport?
+
+EcoReport is a civic AI platform that classifies photo-based reports and routes them to the responsible authorities.
+
+Who is it for?
+
+Citizens, regional government offices, and environmental agencies.
+
+Which technologies are used?
+
+Flutter mobile app, React dashboard, FastAPI backend, PostgreSQL database, YOLOv8 AI model.
+
+---
+
+# TEST_CODE
+
+RAG_WORKS_2025

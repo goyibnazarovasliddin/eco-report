@@ -1,66 +1,50 @@
-import express from "express";
-import cors from "cors";
-import fetch from "node-fetch";
+import 'dotenv/config';
+import fs from "fs";
 
-const app = express();
+const API_KEY = process.env.OPENAI_API_KEY;
 
-app.use(cors());
-app.use(express.json());
+if (!API_KEY) {
+  console.error("❌ OPENAI_API_KEY missing");
+  process.exit(1);
+}
 
-app.post("/chat", async (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+const text = fs.readFileSync("knowledge.txt", "utf8");
 
-  try {
-    const { message } = req.body;
+/* ✅ SECTION-BASED CHUNKING */
+const chunks = text
+  .split(/\n(?=#|##)/)        // # yoki ## bilan boshlangan joylardan bo‘linadi
+  .map(x => x.replace(/^#+\s*/, "").trim())
+  .filter(x => x.length > 100);   // juda kichik bo‘laklar o‘tmasin
 
-    const openai = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          stream: true,
-          messages: [
-            {
-              role: "system",
-              content:
-" You are the official assistant for EcoReport. Use only the provided knowledge file. Answer briefly and clearly."
-            },
-            {
-              role: "user",
-              content: message
-            }
-          ]
-        })
-      }
-    );
+let vectors = [];
 
-    const reader = openai.body.getReader();
-    const decoder = new TextDecoder();
+for (let chunk of chunks) {
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
+  const res = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "text-embedding-3-small",
+      input: chunk
+    })
+  });
 
-      const chunk = decoder.decode(value);
-      res.write(chunk);
-    }
+  const data = await res.json();
 
-    res.write("data: [DONE]\n\n");
-    res.end();
-
-  } catch (err) {
-    res.write(`data: ERROR — ${err.message}\n\n`);
-    res.end();
+  if (!data.data?.[0]?.embedding) {
+    console.error("❌ EMBEDDING ERROR:", JSON.stringify(data, null, 2));
+    process.exit(1);
   }
-});
 
-app.listen(3000, () => {
-  console.log("🚀 Backend running on port 3000");
-});
+  vectors.push({
+    text: chunk,
+    vector: data.data[0].embedding
+  });
+}
+
+fs.writeFileSync("embeddings.json", JSON.stringify(vectors, null, 2));
+
+console.log("✅ Knowledge indexed:", vectors.length);
