@@ -35,7 +35,7 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: data.choices[0].message.content
+        reply: data.output[0].content[0].text
       })
     };
 
