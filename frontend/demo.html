@@ -633,51 +633,36 @@ backdrop.addEventListener('click', closeChat);
     }
 
 async function sendMessage() {
-
   const text = input.value.trim();
   if (!text) return;
 
-  appendBubble('user', text);
-  input.value = '';
+  appendBubble("user", text);
+  input.value = "";
 
-  // ⏳ "Yozmoqda..." animatsiyasi
-  const loadingBubble = appendBubble('bot', 'Yozmoqda.');
-  loadingBubble.classList.add('typing-text');
+  const botBubble = appendBubble("bot", "Yozmoqda...");
 
-  let dots = 1;
+  const response = await fetch("https://YOUR-BACKEND.onrender.com/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: text })
+  });
 
-  const typingInterval = setInterval(() => {
-    dots = (dots % 3) + 1;
-    loadingBubble.textContent = 'Yozmoqda' + '.'.repeat(dots);
-  }, 400);
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
 
-  try {
+  botBubble.textContent = "";
 
-    const res = await fetch('/.netlify/functions/chat', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
-    });
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
 
-    const data = await res.json();
-
-    clearInterval(typingInterval);
-    loadingBubble.classList.remove('typing-text');
-
-    loadingBubble.textContent = data.answer;
-
-  } catch (err) {
-
-    clearInterval(typingInterval);
-    loadingBubble.classList.remove('typing-text');
-
-    loadingBubble.textContent =
-      localAnswer(text) +
-      "\n\n(⚠️ Server bilan aloqa bo‘lmadi)";
+    botBubble.textContent += decoder.decode(value, { stream: true });
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   }
-
-  messagesEl.scrollTop = messagesEl.scrollHeight;
 }
+
 
 
 
