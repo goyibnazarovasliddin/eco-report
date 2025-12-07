@@ -285,6 +285,114 @@
       justify-content: center;
       flex-direction: column;
     }
+
+    /* Chat oynasini kattalashtirish tugmasi */
+.chat-expand-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  transition: background var(--transition), transform var(--transition), color var(--transition);
+  z-index: 5;
+}
+
+.chat-expand-toggle:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Kattalashtirilgan chat holati */
+.chat-card.chat-card--expanded {
+  position: fixed;
+  top: 70px; /* navigatsiyadan pastroqda */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(960px, 100% - 32px);
+  height: calc(100dvh - 100px);
+  z-index: 2000;
+}
+
+/* Kattalashtirilganda ichidagi scroll yaxshi ishlasin */
+.chat-card.chat-card--expanded .chat-messages {
+  max-height: none;
+}
+
+.chat-card.chat-card--expanded .chat-input-row input {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+
+/* =========================
+   CHAT EXPANDED MODAL FIX
+   ========================= */
+
+.chat-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1500;
+  display: none;
+}
+
+.chat-backdrop.active {
+  display: block;
+}
+
+/* Body lock */
+body.chat-lock {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* Kattalashgan chat oynasi */
+.chat-card.chat-card--expanded {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(980px, 100% - 32px);
+  height: calc(100dvh - 120px);
+  z-index: 2000;
+
+  background: rgba(6, 18, 14, 0.96);   /* ✅ opacity pasaytirildi */
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 90px rgba(0,0,0,0.7);
+}
+
+/* Glow effekti o‘chadi */
+.chat-card.chat-card--expanded::before {
+  display: none;
+}
+
+/* Chat ichini qulayroq qilish */
+.chat-card.chat-card--expanded .chat-messages {
+  padding-right: 10px;
+}
+
+.chat-card.chat-card--expanded .chat-input-row {
+  background: rgba(0,0,0,0.2);
+  padding-top: 8px;
+}
+
+/* Kattalashtirish tugmasi kattaroq va aniq ko‘rinsin */
+.chat-expand-toggle {
+  z-index: 2100;
+}
+
   </style>
 </head>
 <body>
@@ -335,7 +443,13 @@
         <!-- RIGHT: CHAT -->
         <div class="demo-right">
           <div class="card chat-card">
+
+            <!-- YANGI: kattalashtirish tugmasi -->
+            <button id="chat-toggle-size" class="chat-expand-toggle" type="button" title="Kattalashtirish">
+              ⤢
+            </button>
             <div class="chip">🤖 EcoReport Chatbot</div>
+
             <div id="chat-messages" class="chat-messages">
               <div class="chat-bubble bot">
                 Salom! Men EcoReport bo‘yicha mini-chatbotman.  
@@ -405,110 +519,246 @@
 
   </div>
 
+  <!-- CHAT BACKDROP -->
+<div id="chat-backdrop" class="chat-backdrop"></div>
+
+
   <footer>
     <p>&copy; 2025 EcoReport — AI500 Stage 2 Demo.</p>
   </footer>
 
   <script>
-    // karta glow effekti (xuddi asosiy saytdagi kabi)
-    document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', x + 'px');
-        card.style.setProperty('--mouse-y', y + 'px');
-      });
+  // 🔐 Bu yerga o'zing kiritasan:
+  const OPENAI_API_KEY = "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";   // masalan: "sk-..."
+  const ASSISTANT_ID   = "asst_Jj77qSopF9zV0gYlLrmDs2M2";     // Assistant ID
+
+  // Bitta sahifa ichida bitta thread ishlatamiz
+  let OPENAI_THREAD_ID = null;
+
+  // karta glow effekti (seniki o'zgarishsiz)
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', x + 'px');
+      card.style.setProperty('--mouse-y', y + 'px');
     });
+  });
 
-    // Chat UI logic
-    (function () {
-      const input = document.getElementById('chat-input');
-      const sendBtn = document.getElementById('chat-send');
-      const messagesEl = document.getElementById('chat-messages');
+  (function () {
+  const input = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send');
+  const messagesEl = document.getElementById('chat-messages');
+  const chatCard = document.querySelector('.chat-card');
+  const toggleBtn = document.getElementById('chat-toggle-size');
+  const backdrop = document.getElementById('chat-backdrop');
 
-      if (!input || !sendBtn || !messagesEl) return;
+  if (!input || !sendBtn || !messagesEl || !chatCard || !toggleBtn) return;
 
-      function appendBubble(role, text) {
-        const div = document.createElement('div');
-        div.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'bot');
-        div.textContent = text;
-        messagesEl.appendChild(div);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+  function appendBubble(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'bot');
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return div;
+  }
+
+  // 🔁 Kattalashtirish / kichiklashtirish toggle
+  let isExpanded = false;
+
+function openChat() {
+  isExpanded = true;
+  chatCard.classList.add('chat-card--expanded');
+  backdrop.classList.add('active');
+  document.body.classList.add('chat-lock');
+
+  toggleBtn.textContent = '⤡';
+  toggleBtn.title = 'Kichiklashtirish';
+}
+
+function closeChat() {
+  isExpanded = false;
+  chatCard.classList.remove('chat-card--expanded');
+  backdrop.classList.remove('active');
+  document.body.classList.remove('chat-lock');
+
+  toggleBtn.textContent = '⤢';
+  toggleBtn.title = 'Kattalashtirish';
+}
+
+toggleBtn.addEventListener('click', () => {
+  isExpanded ? closeChat() : openChat();
+});
+
+/* Orqa fon bosilganda yopilsin */
+backdrop.addEventListener('click', closeChat);
+
+    // Fallback: agar OpenAI ishlamasa, eski rule-based javob
+    function localAnswer(q) {
+      const text = q.toLowerCase();
+
+      if (text.includes('nima qiladi') || text.includes('loyiha')) {
+        return "EcoReport fuqarolarga ekologik va infratuzilmaviy muammolarni (chiqindi, yo'l shikasti, suv sizishi va hokazo) " +
+               "surat orqali tezda xabar qilish imkonini beradi. AI rasmni tahlil qiladi va muammoni tegishli idoraga yo'naltiradi.";
+      }
+      if (text.includes('kimlar uchun') || text.includes('auditoriya')) {
+        return "Mahsulot oddiy fuqarolar, mahalla faollari, ekologiya bilan shug'ullanuvchi tashkilotlar va mahalliy hokimliklar " +
+               "uchun mo'ljallangan. Muammolarni tez ko'rish va tez hal qilish zarur bo'lgan barcha tomonlar undan foyda ko'rishi mumkin.";
+      }
+      if (text.includes('ai') || text.includes('suniy intellekt') || text.includes('yolo')) {
+        return "EcoReport YOLOv8, PyTorch va OpenCV yordamida suratlardagi muammolarni aniqlaydi, tasniflaydi va prioritetlarga ajratadi. " +
+               "Bu idoralar uchun tayyorlangan va filtrlab berilgan ma'lumot oqimini yaratadi.";
+      }
+      if (text.includes('bosqich') || text.includes('holati') || text.includes('status')) {
+        return "Loyiha hozirda Prototype / Early MVP bosqichida. UI/UX, AI integratsiyasi va backend arxitekturasi tayyorlanmoqda, " +
+               "keyingi bosqichda pilot hududda sinov o'tkazish rejalashtirilgan.";
       }
 
-      // Yengil rule-based fallback (agar backend ishlamasa ham)
-      function localAnswer(q) {
-        const text = q.toLowerCase();
+      return "EcoReport — fuqarolar, idoralar va AI ni bir ekotizimga birlashtiruvchi platforma. " +
+             "Aniqroq savol bersangiz, sizni qiziqtirgan jihat bo‘yicha batafsil javob beraman 😊";
+    }
 
-        if (text.includes('nima qiladi') || text.includes('loyiha')) {
-          return "EcoReport fuqarolarga ekologik va infratuzilmaviy muammolarni (chiqindi, yo'l shikasti, suv sizishi va hokazo) " +
-                 "surat orqali tezda xabar qilish imkonini beradi. AI rasmni tahlil qiladi va muammoni tegishli idoraga yo'naltiradi.";
-        }
-        if (text.includes('kimlar uchun') || text.includes('auditoriya')) {
-          return "Mahsulot oddiy fuqarolar, mahalla faollari, ekologiya bilan shug'ullanuvchi tashkilotlar va mahalliy hokimliklar " +
-                 "uchun mo'ljallangan. Muammolarni tez ko'rish va tez hal qilish zarur bo'lgan barcha tomonlar undan foyda ko'rishi mumkin.";
-        }
-        if (text.includes('ai') || text.includes('suniy intellekt') || text.includes('yolo')) {
-          return "EcoReport YOLOv8, PyTorch va OpenCV yordamida suratlardagi muammolarni aniqlaydi, tasniflaydi va prioritetlarga ajratadi. " +
-                 "Bu idoralar uchun tayyorlangan va filtrlab berilgan ma'lumot oqimini yaratadi.";
-        }
-        if (text.includes('bosqich') || text.includes('holati') || text.includes('status')) {
-          return "Loyiha hozirda Prototype / Early MVP bosqichida. UI/UX, AI integratsiyasi va backend arxitekturasi tayyorlanmoqda, " +
-                 "keyingi bosqichda pilot hududda sinov o'tkazish rejalashtirilgan.";
-        }
+    // 🧠 Thread ID bo'lmasa — yaratib beradi
+    async function ensureThreadId(headers) {
+      if (OPENAI_THREAD_ID) return OPENAI_THREAD_ID;
 
-        return "EcoReport — fuqarolar, idoralar va AI ni bir ekotizimga birlashtiruvchi platforma. " +
-               "Aniqroq savol bersangiz, sizni qiziqtirgan jihat bo‘yicha batafsil javob beraman 😊";
-      }
-
-      async function sendMessage() {
-        const text = input.value.trim();
-        if (!text) return;
-
-        appendBubble('user', text);
-        input.value = '';
-
-        // loading bubble
-        const loading = document.createElement('div');
-        loading.className = 'chat-bubble bot';
-        loading.textContent = 'Yuklanmoqda...';
-        messagesEl.appendChild(loading);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-
-        // 1) Agar backend ulangan bo'lsa, shu yerda /api/chat ga so'rov yuborasiz
-        try {
-          const res = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            loading.remove();
-            appendBubble('bot', data.answer || 'Serverdan javob olindi, lekin matn topilmadi.');
-            return;
-          } else {
-            // agar status ok bo'lmasa, local fallback
-            throw new Error('Bad status: ' + res.status);
-          }
-        } catch (err) {
-          // 2) Backend ishlamasa, browser ichidagi rule-based javob
-          loading.remove();
-          const answer = localAnswer(text);
-          appendBubble('bot', answer);
-        }
-      }
-
-      sendBtn.addEventListener('click', sendMessage);
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
-        }
+      const res = await fetch("https://api.openai.com/v1/threads", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({})
       });
-    })();
-  </script>
+
+      if (!res.ok) {
+        throw new Error("Thread yaratib bo'lmadi: " + res.status);
+      }
+      const data = await res.json();
+      OPENAI_THREAD_ID = data.id;
+      return OPENAI_THREAD_ID;
+    }
+
+    // 🔗 Assistants API bilan STREAMING
+    async function askOpenAIStreaming(userText, botBubble) {
+      if (!OPENAI_API_KEY || !ASSISTANT_ID) {
+        throw new Error("API kalit yoki ASSISTANT_ID kiritilmagan");
+      }
+
+      const headers = {
+        "Authorization": "Bearer " + OPENAI_API_KEY,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2"
+      };
+
+      // 1) Thread tayyor bo'lsin
+      const threadId = await ensureThreadId(headers);
+
+      // 2) User xabarini thread'ga qo'shamiz
+      const msgRes = await fetch(
+        `https://api.openai.com/v1/threads/${threadId}/messages`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            role: "user",
+            content: userText
+          })
+        }
+      );
+      if (!msgRes.ok) {
+        throw new Error("Xabarni thread'ga qo'shishda xatolik: " + msgRes.status);
+      }
+
+      // 3) Run'ni STREAM rejimida ishga tushiramiz
+      const runRes = await fetch(
+        `https://api.openai.com/v1/threads/${threadId}/runs`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            assistant_id: ASSISTANT_ID,
+            stream: true
+          })
+        }
+      );
+
+      if (!runRes.ok) {
+        throw new Error("Run yaratib bo'lmadi: " + runRes.status);
+      }
+
+      // Browserda ReadableStream orqali SSE ni o'qish
+      const reader = runRes.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) continue;
+
+          const dataStr = trimmed.slice(5).trim();
+          if (!dataStr || dataStr === "[DONE]") {
+            continue;
+          }
+
+          let evt;
+          try { evt = JSON.parse(dataStr); } catch { continue; }
+
+          // text delta qismlarini bubble'ga qo'shamiz
+          if (evt.object === "thread.message.delta") {
+            const parts = evt.delta?.content || [];
+            for (const part of parts) {
+              if (part.type === "text" && part.text?.value) {
+                botBubble.textContent += part.text.value;
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+              }
+            }
+          }
+        }
+      }
+
+      if (!botBubble.textContent.trim()) {
+        botBubble.textContent = "Javob matni bo'sh qaytdi.";
+      }
+    }
+
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendBubble('user', text);
+      input.value = '';
+
+      // Streaming uchun bo'sh bot bubble
+      const botBubble = appendBubble('bot', '...');
+      botBubble.textContent = '';
+
+      try {
+        await askOpenAIStreaming(text, botBubble);
+      } catch (err) {
+        console.error(err);
+        botBubble.textContent = localAnswer(text) +
+          "\n\n(⚠️ OpenAI API ga to'g'ridan-to'g'ri ulanib bo'lmadi, lokal javob.)";
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  })();
+</script>
+
 </body>
 </html>
