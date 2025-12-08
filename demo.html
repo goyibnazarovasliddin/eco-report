@@ -470,6 +470,38 @@
   background-color: var(--bg-dark);
 }
 
+/* CTA tugmalar uchun center klassini ishlatamiz */
+.flex.center {
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tugma ichidagi <a> ham markaz bo‘lsin */
+.flex.center .btn a {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+/* Mobil layoutga xos o‘zgartirishlar */
+@media (max-width: 1024px) {
+  /* Scroll animatsiyani butunlay o‘chirib qo‘yish */
+  .mouse-scroll {
+    display: none;
+  }
+
+  /* CTA tugmalarni mobile’da ustma-ust markazda chiqarish */
+  .flex.center {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .flex.center .btn {
+    width: 100%;
+    max-width: 260px;
+    text-align: center;
+  }
+}
 
 
 
