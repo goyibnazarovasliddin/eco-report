@@ -455,45 +455,6 @@ body.chat-lock {
               va vazifalarni ijrochilarga biriktirish misollari beriladi.
             </p>
           </div>
-        </div>
-
-        <!-- RIGHT: CHAT -->
-        <div class="demo-right">
-          <div class="card chat-card">
-
-            <!-- YANGI: kattalashtirish tugmasi -->
-            <button id="chat-toggle-size" class="chat-expand-toggle" type="button" title="Kattalashtirish">
-              ⤢
-            </button>
-            <div class="chip">🤖 EcoReport Chatbot</div>
-
-            <div id="chat-messages" class="chat-messages">
-              <div class="chat-bubble bot">
-                Salom! Men EcoReport bo‘yicha mini-chatbotman.  
-                Loyihamiz, maqsadli auditoriya yoki AI texnologiyalari haqida savol berishingiz mumkin.
-              </div>
-            </div>
-            <div class="chat-input-row">
-              <input id="chat-input" type="text"
-                     placeholder="Savolingizni yozing, masalan: “Sizning loyihangiz nima qiladi?”">
-              <button id="chat-send" class="btn" type="button" style="padding:10px 16px;">Yuborish</button>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:16px;">
-            <h3>API kirish va chat qanday ishlaydi?</h3>
-            <p>
-              Ushbu chat oynasi aslida API orqali ishlashi mumkin. Frontend qismi foydalanuvchi
-              savolini <code>POST /api/chat</code> endpointiga yuboradi, backend esa OpenAI modelidan
-              foydalangan holda javob qaytaradi.
-            </p>
-            <p style="margin-bottom:0;">
-              Demo rejimida, agar backend ulanmagan bo‘lsa, chatbot javoblarini browser ichidagi
-              yengil qoidalar (rule-based) asosida generatsiya qiladi. Backend ulangan paytda esa
-              aynan o‘sha interfeys OpenAI model bilan haqiqiy chatga aylanadi.
-            </p>
-          </div>
-        </div>
 
       </div>
     </section>
@@ -535,9 +496,9 @@ body.chat-lock {
     </section>
 
   </div>
-
+<!-- 
   <!-- CHAT BACKDROP -->
-<div id="chat-backdrop" class="chat-backdrop"></div>
+<div id="chat-backdrop" class="chat-backdrop"></div> -->
 
 
   <footer>
@@ -692,6 +653,10 @@ async function sendMessage() {
     });
   })();
 </script>
+
+  <script>
+  (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="OIPYkO_wOpQ9wGHpgo2HK";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+  </script>
 
 </body>
 </html>
