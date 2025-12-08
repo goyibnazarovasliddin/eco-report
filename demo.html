@@ -121,7 +121,7 @@
     }
 
     section {
-      padding: 140px 0 80px;
+      padding: 8dvh 0 80px;
     }
 
     .flex {
@@ -287,126 +287,190 @@
     }
 
     /* Chat oynasini kattalashtirish tugmasi */
-.chat-expand-toggle {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-muted);
-  display: inline-flex;
+    .chat-expand-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+      transition: background var(--transition), transform var(--transition), color var(--transition);
+      z-index: 5;
+    }
+
+    .chat-expand-toggle:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Kattalashtirilgan chat holati */
+    .chat-card.chat-card--expanded {
+      position: fixed;
+      top: 70px; /* navigatsiyadan pastroqda */
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(960px, 100% - 32px);
+      height: calc(100dvh - 100px);
+      z-index: 2000;
+    }
+
+    /* Kattalashtirilganda ichidagi scroll yaxshi ishlasin */
+    .chat-card.chat-card--expanded .chat-messages {
+      max-height: none;
+    }
+
+    .chat-card.chat-card--expanded .chat-input-row input {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+
+    /* =========================
+      CHAT EXPANDED MODAL FIX
+      ========================= */
+
+    .chat-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(2px);
+      z-index: 1500;
+      display: none;
+    }
+
+    .chat-backdrop.active {
+      display: block;
+    }
+
+    /* Body lock */
+    body.chat-lock {
+      overflow: hidden;
+      height: 100dvh;
+    }
+
+    /* Kattalashgan chat oynasi */
+    .chat-card.chat-card--expanded {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(980px, 100% - 32px);
+      height: calc(100dvh - 120px);
+      z-index: 2000;
+
+      background: rgba(6, 18, 14, 0.96);   /* ✅ opacity pasaytirildi */
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 90px rgba(0,0,0,0.7);
+    }
+
+    /* Glow effekti o‘chadi */
+    .chat-card.chat-card--expanded::before {
+      display: none;
+    }
+
+    /* Chat ichini qulayroq qilish */
+    .chat-card.chat-card--expanded .chat-messages {
+      padding-right: 10px;
+    }
+
+    .chat-card.chat-card--expanded .chat-input-row {
+      background: rgba(0,0,0,0.2);
+      padding-top: 8px;
+    }
+
+    /* Kattalashtirish tugmasi kattaroq va aniq ko‘rinsin */
+    .chat-expand-toggle {
+      z-index: 2100;
+    }
+
+    /* Bot is typing animation */
+    .typing-text {
+      opacity: 0.85;
+      font-style: italic;
+      animation: dots 1.4s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%   { content: "Yozmoqda."; }
+      25%  { content: "Yozmoqda.."; }
+      50%  { content: "Yozmoqda..."; }
+      75%  { content: "Yozmoqda.."; }
+      100% { content: "Yozmoqda."; }
+    }
+
+.mouse-scroll {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 10px;
+}
+
+/* Chap tomonda, vertikal o‘rtada, fixed */
+.scroll-left-center {
+  position: fixed;
+  left: 10%;             /* kerak bo‘lsa 16 / 24 px ga tushirishing mumkin */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+}
+
+/* Neon green ranglar */
+.mouse {
+  width: 48px;
+  height: 80px;
+  border: 3px solid var(--green-neon);         /* neon green */
+  border-radius: 24px;
+  display: flex;
   justify-content: center;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  padding: 0;
-  transition: background var(--transition), transform var(--transition), color var(--transition);
-  z-index: 5;
+  align-items: flex-start;
+  background: transparent;
+  box-shadow: 0 0 12px var(--green-neon);
 }
 
-.chat-expand-toggle:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
-  transform: translateY(-1px);
+.wheel {
+  width: 8px;
+  height: 16px;
+  background-color: var(--green-neon);
+  border-radius: 4px;
+  animation: scroll 1s infinite;
+  margin-top: 8px;
+  box-shadow: 0 0 10px var(--green-neon);
 }
 
-/* Kattalashtirilgan chat holati */
-.chat-card.chat-card--expanded {
-  position: fixed;
-  top: 70px; /* navigatsiyadan pastroqda */
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(960px, 100% - 32px);
-  height: calc(100dvh - 100px);
-  z-index: 2000;
+/* Scroll animatsiya */
+@keyframes scroll {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
-/* Kattalashtirilganda ichidagi scroll yaxshi ishlasin */
-.chat-card.chat-card--expanded .chat-messages {
-  max-height: none;
+.arrow {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--green-neon);
+  border-bottom: 2px solid var(--green-neon);
+  transform: rotate(45deg);
+  /* box-shadow: 0 0 10px #39ff14; */
+  background-color: var(--bg-dark);
 }
 
-.chat-card.chat-card--expanded .chat-input-row input {
-  background: rgba(255, 255, 255, 0.06);
-}
 
-
-/* =========================
-   CHAT EXPANDED MODAL FIX
-   ========================= */
-
-.chat-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(2px);
-  z-index: 1500;
-  display: none;
-}
-
-.chat-backdrop.active {
-  display: block;
-}
-
-/* Body lock */
-body.chat-lock {
-  overflow: hidden;
-  height: 100dvh;
-}
-
-/* Kattalashgan chat oynasi */
-.chat-card.chat-card--expanded {
-  position: fixed;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(980px, 100% - 32px);
-  height: calc(100dvh - 120px);
-  z-index: 2000;
-
-  background: rgba(6, 18, 14, 0.96);   /* ✅ opacity pasaytirildi */
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 20px 90px rgba(0,0,0,0.7);
-}
-
-/* Glow effekti o‘chadi */
-.chat-card.chat-card--expanded::before {
-  display: none;
-}
-
-/* Chat ichini qulayroq qilish */
-.chat-card.chat-card--expanded .chat-messages {
-  padding-right: 10px;
-}
-
-.chat-card.chat-card--expanded .chat-input-row {
-  background: rgba(0,0,0,0.2);
-  padding-top: 8px;
-}
-
-/* Kattalashtirish tugmasi kattaroq va aniq ko‘rinsin */
-.chat-expand-toggle {
-  z-index: 2100;
-}
-
-/* Bot is typing animation */
-.typing-text {
-  opacity: 0.85;
-  font-style: italic;
-  animation: dots 1.4s steps(4, end) infinite;
-}
-
-@keyframes dots {
-  0%   { content: "Yozmoqda."; }
-  25%  { content: "Yozmoqda.."; }
-  50%  { content: "Yozmoqda..."; }
-  75%  { content: "Yozmoqda.."; }
-  100% { content: "Yozmoqda."; }
-}
 
 
 
@@ -445,19 +509,21 @@ body.chat-lock {
 
           <div class="card" style="margin-top:16px;">
             <h3>Videoda nimalar ko‘rsatiladi?</h3>
-            <p>
-              Demo videoda foydalanuvchi EcoReport ilovasida muammoni suratga olishi, GPS aniqlanishi,
-              AI (YOLOv8) tomonidan rasm tahlil qilinishi, muammo tegishli idoraga yo‘naltirilishi va
-              statusning “hal qilindi” bosqichigacha bo‘lgan jarayon ko‘rsatiladi.
-            </p>
-            <p style="margin-bottom:0;">
-              Shuningdek, idoralar uchun web-dashboarddan kelayotgan murojaatlarni ko‘rish, filtr qilish
-              va vazifalarni ijrochilarga biriktirish misollari beriladi.
-            </p>
+            <ul style="color:white;line-height:1.6; padding: 20px;">
+              <li>Ilovaga kirish — splash, ro'yxatdan o'tish (telefon / Google) va asosiy sahifa.</li>
+              <li>Kamera orqali muammoni suratga olish va GPS joylashuvni avtomatik aniqlash.</li>
+              <li>Rasm serverga yuborilishi va AI (YOLOv8) tomonidan avtomatik klassifikatsiya va qisqacha tavsif (caption) yaratilishi.</li>
+              <li>Tizim muammoni tegishli idoraga yo‘naltirishi va dashboardda vazifa hosil bo‘lishi.</li>
+              <li>Dashboard: xodim muammoni ko‘rib chiqishi, vazifa tayinlashi, statusni yangilashi va hisobot (timeline) ko‘rinishi.</li>
+              <li>Real-time xaritada markerlar va foydalanuvchiga bildirishnoma kelishi; hal qilingandan keyin jamoaviy tasdiqlash jarayoni.</li>
+            </ul>
           </div>
 
       </div>
     </section>
+
+    <!-- ===== DEMO: Video + Short Summary ===== -->
+
 
     <!-- QOLGAN NARSA: API misoli va loyiha tavsifi pastda -->
     <section id="api-doc">
@@ -480,17 +546,21 @@ body.chat-lock {
 }</code></pre>
         </div>
 
-        <div class="card" style="flex:1 1 300px;">
-          <h3>Loyiha holati va keyingi qadamlar</h3>
-          <p>
-            Hozirda EcoReport <strong>Prototype / Early MVP</strong> bosqichida. Foydalanuvchi
-            oqimlari, UI dizayn, AI modeli uchun dastlabki integratsiyalar va backend arxitekturasi
-            ishlab chiqilgan.
-          </p>
-          <p>
-            Keyingi qadamlarga AI modelini mahalliy data bilan kuchaytirish, tanlangan tumanda
-            pilot sinov o‘tkazish va idoralar bilan to‘liq integratsiyani yo‘lga qo‘yish kiradi.
-          </p>
+        <div class="card" style="flex:1 1 300px; padding: 20px">
+          <h3 style="color:var(--green-neon);margin-bottom:6px;">Loyiha holati</h3>
+          <ul style="line-height:1.6;color: white;padding: 20px">
+            <li><strong>Holat:</strong> Prototype → MVP (Prototype ishlayotgani va MVP jarayonida)</li>
+            <li><strong>Mavjud elementlar:</strong> Mobil app flow prototipi, dashboard prototipi, YOLOv8 inference demo, real-time status oqimi (demo)</li>
+          </ul>
+
+          <h4 style="color:var(--green-neon);margin-top:12px;">Keyingi qadamlar</h4>
+          <ol style="line-height:1.6;color:white;padding: 20px">
+            <li>AI modelni kengroq va annotatsiyalangan dataset bilan qayta o‘qitish.</li>
+            <li>Backendni to‘liq integratsiya qilish (auth, S3, Postgres, queue bilan).</li>
+            <li>Dashboardda task assignment va verification queue-ni real ish jarayoniga moslashtirish.</li>
+            <li>Beta test: tanlangan hududlarda foydalanuvchilar bilan sinov.</li>
+            <li>Skalalashtirish va monitoring (metrics, alerts, SLA tayyorlash).</li>
+          </ol>
         </div>
       </div>
     </section>
@@ -498,7 +568,17 @@ body.chat-lock {
   </div>
 <!-- 
   <!-- CHAT BACKDROP -->
-<div id="chat-backdrop" class="chat-backdrop"></div> -->
+<!-- <div id="chat-backdrop" class="chat-backdrop"></div> -->
+
+<div class="mouse-scroll scroll-left-center">
+  <div class="mouse">
+    <div class="wheel"></div>
+  </div>
+  <div class="arrow"></div>
+</div>
+
+
+
 
 
   <footer>
