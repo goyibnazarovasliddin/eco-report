@@ -121,7 +121,7 @@
     }
 
     section {
-      padding: 8dvh 0 80px;
+      padding: 15dvh 0 80px;
     }
 
     .flex {
@@ -408,100 +408,100 @@
       100% { content: "Yozmoqda."; }
     }
 
-.mouse-scroll {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+    .mouse-scroll {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
 
-/* Chap tomonda, vertikal o‘rtada, fixed */
-.scroll-left-center {
-  position: fixed;
-  left: 10%;             /* kerak bo‘lsa 16 / 24 px ga tushirishing mumkin */
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 999;
-}
+    /* Chap tomonda, vertikal o‘rtada, fixed */
+    .scroll-left-center {
+      position: fixed;
+      left: 5dvw;             /* kerak bo‘lsa 16 / 24 px ga tushirishing mumkin */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 999;
+    }
 
-/* Neon green ranglar */
-.mouse {
-  width: 48px;
-  height: 80px;
-  border: 3px solid var(--green-neon);         /* neon green */
-  border-radius: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background: transparent;
-  box-shadow: 0 0 12px var(--green-neon);
-}
+    /* Neon green ranglar */
+    .mouse {
+      width: 48px;
+      height: 80px;
+      border: 3px solid var(--green-neon);         /* neon green */
+      border-radius: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: transparent;
+      box-shadow: 0 0 12px var(--green-neon);
+    }
 
-.wheel {
-  width: 8px;
-  height: 16px;
-  background-color: var(--green-neon);
-  border-radius: 4px;
-  animation: scroll 1s infinite;
-  margin-top: 8px;
-  box-shadow: 0 0 10px var(--green-neon);
-}
+    .wheel {
+      width: 8px;
+      height: 16px;
+      background-color: var(--green-neon);
+      border-radius: 4px;
+      animation: scroll 1s infinite;
+      margin-top: 8px;
+      box-shadow: 0 0 10px var(--green-neon);
+    }
 
-/* Scroll animatsiya */
-@keyframes scroll {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(8px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
+    /* Scroll animatsiya */
+    @keyframes scroll {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(8px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
 
-.arrow {
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid var(--green-neon);
-  border-bottom: 2px solid var(--green-neon);
-  transform: rotate(45deg);
-  /* box-shadow: 0 0 10px #39ff14; */
-  background-color: var(--bg-dark);
-}
+    .arrow {
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid var(--green-neon);
+      border-bottom: 2px solid var(--green-neon);
+      transform: rotate(45deg);
+      /* box-shadow: 0 0 10px #39ff14; */
+      background-color: var(--bg-dark);
+    }
 
-/* CTA tugmalar uchun center klassini ishlatamiz */
-.flex.center {
-  justify-content: center;
-  align-items: center;
-}
+    /* CTA tugmalar uchun center klassini ishlatamiz */
+    .flex.center {
+      justify-content: center;
+      align-items: center;
+    }
 
-/* Tugma ichidagi <a> ham markaz bo‘lsin */
-.flex.center .btn a {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
+    /* Tugma ichidagi <a> ham markaz bo‘lsin */
+    .flex.center .btn a {
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
 
-/* Mobil layoutga xos o‘zgartirishlar */
-@media (max-width: 1024px) {
-  /* Scroll animatsiyani butunlay o‘chirib qo‘yish */
-  .mouse-scroll {
-    display: none;
-  }
+    /* Mobil layoutga xos o‘zgartirishlar */
+    @media (max-width: 1024px) {
+      /* Scroll animatsiyani butunlay o‘chirib qo‘yish */
+      .mouse-scroll {
+        display: none;
+      }
 
-  /* CTA tugmalarni mobile’da ustma-ust markazda chiqarish */
-  .flex.center {
-    flex-direction: column;
-    align-items: center;
-  }
+      /* CTA tugmalarni mobile’da ustma-ust markazda chiqarish */
+      .flex.center {
+        flex-direction: column;
+        align-items: center;
+      }
 
-  .flex.center .btn {
-    width: 100%;
-    max-width: 260px;
-    text-align: center;
-  }
-}
+      .flex.center .btn {
+        width: 100%;
+        max-width: 260px;
+        text-align: center;
+      }
+    }
 
 
 
